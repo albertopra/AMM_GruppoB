@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Venditore</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="author" content="Alberto Pranteddu">
+        <meta name="keywords" content="amm, 2016, milestone 1, venditore">
+    </head>
+    
+    <body>
+        <h1>Venditore</h1>
+        
+        <!-- Sezione inserimento nuovo oggetto -->
+        <form method="post">
+
+            <!-- Nome e URL immagine -->
+            <div>
+                <label for="nome_oggetto">Nome oggetto:</label>
+                <input type="text" name="nome_oggetto" id="nome_oggetto" />
+                <label for="url_img">URL immagine:</label>
+                <input type="text" name="url_img" id="url_img" />
+            </div>
+
+            <!-- Descrizione -->
+            <div>
+                <label for="descrizione">Descrizione:</label>
+                <textarea name="descrizione" id="descrizione"
+                 rows="10" cols="40">Descrizione oggetto</textarea>
+            </div>
+
+            <!-- Prezzo e quantità-->
+            <div>
+                <label for="prezzo">Prezzo:</label>
+                <input type="number" name="prezzo" id="prezzo" />
+                <label for="quantità">Quantità:</label>
+                <input type="number" name="quantità" id="quantità" />
+            </div>
+            
+            <!-- Submit e reset -->
+            <div>
+                <input type="submit" value="Invia"/>
+                <input type="reset" value="Reimposta"/>
+            </div>
+        </form>
+       
+       
+        <!-- Navigazione -->
+        <div>
+            <a href="descrizione.html">Descrizione</a>
+            <a href="login.html">Login</a>
+        </div>    
+    </body>
+</html>
