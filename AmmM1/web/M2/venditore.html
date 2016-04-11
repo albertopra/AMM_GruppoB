@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Venditore</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="author" content="Alberto Pranteddu">
+        <meta name="keywords" content="amm, 2016, milestone 1, venditore">
+        
+        <!-- CSS link -->
+        <link href="./style.css" rel="stylesheet" type="text/css" media="screen" />
+    </head>
+    
+    <body>
+        <div id="wrapper">
+            <h1 class="title">SkateTrade</h1>
+            <header></header>
+            
+            <div id="content-conteiner">
+                <div id="sidebar-left">
+                    <h3>Navigazione:</h3>
+                    <div class="nav">
+                        <a href="descrizione.html">Descrizione</a>
+                        <a href="login.html">Login</a>
+                    </div>
+                </div>
+                
+                <div id="content">
+                    <h2>Venditore</h2>
+                    
+                    <!-- Form inserimento dati oggetto -->
+                    <form method="post">
+                            <div class="input-field">
+                                <!-- Nome -->
+                                <label for="nome_oggetto">Nome oggetto:</label>
+                                <input type="text" name="nome_oggetto" id="nome_oggetto" />
+                            </div>
+                            
+                            <div class="input-field">
+                                <!-- URL immagine -->
+                                <label for="url_img">URL immagine:</label>
+                                <input type="text" name="url_img" id="url_img" />
+                            </div>
+                            
+                            <div class="input-field">
+                                <!-- Descrizione -->
+                                <label for="descrizione">Descrizione:</label>
+                                <textarea name="descrizione" id="descrizione"
+                                 rows="10" cols="40">Descrizione oggetto</textarea>
+                            </div>    
+
+                            <div class="input-field">
+                                <!-- Prezzo-->
+                                <label for="prezzo">Prezzo:</label>
+                                <input type="number" name="prezzo" id="prezzo" />
+                            </div>
+                                
+                            <div class="input-field">
+                                <!-- Quantità-->
+                                <label for="quantità">Quantità:</label>
+                                <input type="number" name="quantità" id="quantità" />
+                            </div>
+                        
+                            <div class="input-field">
+                                <!-- Submit e reset -->
+                                <input type="submit" value="Invia"/>
+                                <input type="reset" value="Reimposta"/>
+                            </div>
+                    </form>
+                </div>
+            </div>
+            
+            <footer></footer>
+        </div>
+    </body>
+</html>
