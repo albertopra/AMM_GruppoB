@@ -27,3 +27,17 @@ and open the template in the editor.
         <div id="wrapper">
             <h1 class="title">SkateTrade</h1>
             <header></header>
+            
+            <div id="content-conteiner">
+                <div id="sidebar-left">
+                    <h3>Navigazione:</h3>
+
+                    <!-- Navigazione -->
+                    <div class="nav">
+                        <a href="descrizione.html">Descrizione</a>
+                        <a href="login.html">Login</a>
+                        <a href="cliente.html">Cliente</a>
+                        <a href="venditore.html">Venditore</a>
+                    </div>
+                </div>
+

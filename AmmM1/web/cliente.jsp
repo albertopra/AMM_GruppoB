@@ -4,101 +4,88 @@
     Author     : alber
 --%>
 
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
-<%@ include file="header.jsp" %>
+<jsp:include page="header.jsp" />
 
-<div id="content-conteiner">
-    <div id="sidebar-left">
-        <h3>Navigazione:</h3>
+<div id="content">
+    <h2>Cliente</h2>
+    
+    <c:choose> 
+        <c:when test="${accessoNegato == true}">
+            <p>Accesso Negato!</p>
+            <c:choose>
+                <c:when test="${logged == true}">
+                    <p>L'utente venditore non può avere accesso alla sezione del cliente.</p>
+                </c:when>
+                <c:otherwise>
+                    <p>Si prega di effettuare l'accesso.</p>
+                </c:otherwise>
+            </c:choose>
+        </c:when>
 
-        <!-- Navigazione -->
-        <div class="nav">
-            <a href="descrizione.html">Descrizione</a>
-            <a href="login.html">Login</a>
-        </div>
-    </div>
-
-    <div id="content">
-        <h2>Cliente</h2>
-
-        <!-- Tabella oggetti -->
-        <table>
-            <tr>
-                <th>Nome</th>
-                <th>Foto</th>
-                <th>Quantità</th>
-                <th>Prezzo</th>
-                <th>Link acquisto</th>
-            </tr>
-
-            <tr>
-                <td>Hudora Skateboard, ABEC 5</td>
-                <td>
-                    <img src="img/hudora_skate.jpg" width="100" 
-                         height="100" alt="Hudora skate"/>
-                </td>
-                <td>5 pezzi</td>
-                <td>25,46 €</td>
-                <td><a href="cliente.html">Acquista ora!</a></td>
-            </tr>
-
-            <tr>
-                <td>Truck Independent: 149 Salazar Doomsayers Matte Nero Std Stage 11</td>
-                <td>
-                    <img src="img/truck_independent.jpg" width="100" 
-                         height="100" alt="Truck independent"/>
-                </td>
-                <td>12 pezzi</td>
-                <td>40,71 €</td>
-                <td><a href="cliente.html">Acquista ora!</a></td>
-            </tr>
-
-            <tr>
-                <td>Tavola Element: Westgate Split 8</td>
-                <td>
-                    <img src="img/tavola_element.jpg" width="100" 
-                         height="100" alt="Tavola element"/>
-                </td>
-                <td>7 pezzi</td>
-                <td>58,70 €</td>
-                <td><a href="cliente.html">Acquista ora!</a></td>
-            </tr>
-
-            <tr>
-                <td>Tavola Zero: Dead Presidents Jamie Thomas 8.375</td>
-                <td>
-                    <img src="img/tavola_zero.jpg" width="100" 
-                         height="100" alt="Tavola zero"/>
-                </td>
-                <td>9 pezzi</td>
-                <td>63,82 €</td>
-                <td><a href="cliente.html">Acquista ora!</a></td>
-            </tr>
-
-            <tr>
-                <td>Spitfire - Kit di 4 ruote per skateboard Bighead</td>
-                <td>
-                    <img src="img/ruote_spitfire.jpg" width="100" 
-                         height="100" alt="Ruote Spitfire"/>
-                </td>
-                <td>13 pezzi</td>
-                <td>46,57 €</td>
-                <td><a href="cliente.html">Acquista ora!</a></td>
-            </tr>
-
-            <tr>
-                <td>Cuscinetti Skateboard Enuff Black</td>
-                <td>
-                    <img src="img/cuscinetti_enuff_black.jpg" width="100" 
-                         height="100" alt="Cuscinetti Enuff Black"/>
-                </td>
-                <td>11 pezzi</td>
-                <td>14,99 €</td>
-                <td><a href="cliente.html">Acquista ora!</a></td>
-            </tr>
-        </table>
-    </div>
+        <c:otherwise>
+            <c:choose>
+                <c:when test="${fase_acquisto == true}">
+                    <c:choose>
+                        <c:when test="${oggetto_acquistato == true}">
+                            <c:choose>
+                                <c:when test="${errore_acquisto == true}">
+                                    <p>Attezione! Il credito disponibile e' inferiore
+                                        alla cifra richiesta.</p>
+                                    <a href="cliente.html">Torna indietro.</a>
+                                </c:when>
+                                <c:otherwise>
+                                    <p>L'oggetto e' stato aquistato correttamente!</p>
+                                    <a href="cliente.html">Torna indietro.</a>
+                                </c:otherwise>
+                            </c:choose>
+                        </c:when>
+                        <c:otherwise>
+                            <p>Ecco un riepilogo dei dati:</p>
+                            <ul>
+                                <li><strong>ID</strong>: ${object.getId()}</li>
+                                <li><strong>Nome</strong>: ${object.getNome()}</li>
+                                <li><strong>Url immagine</strong>: ${object.getUrlImmagine()}</li>
+                                <li><strong>Descrizione</strong>: ${object.getDescrizione()}</li>
+                                <li><strong>Prezzo</strong>: ${object.getPrezzo()}</li>
+                                <li><strong>Quantita</strong>: ${object.getQuantita()}</li>
+                            </ul>
+                            <form method="post" action="cliente.html?id_oggetto=${object.getId()}" >
+                                <input type="submit" name="Submit" value="Acquista!"/>
+                            </form>
+                        </c:otherwise>
+                    </c:choose>
+                </c:when>
+                <c:otherwise>
+                    <!-- Tabella oggetti -->
+                    <table>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Foto</th>
+                            <th>Quantità</th>
+                            <th>Prezzo</th>
+                            <th>Link acquisto</th>
+                        </tr>
+                        
+                        <c:forEach var="obj" items="${objectList}">
+                            <tr>
+                                <td>${obj.getNome()}</td>
+                                <td><img src=${obj.getUrlImmagine()} width="100" 
+                                     height="100"/>
+                                </td>
+                                <td>${obj.getQuantita()}</td>
+                                <td>${obj.getPrezzo()}€</td>
+                                <td><a href="cliente.html?id_oggetto=${obj.getId()}">Acquista ora!</a></td>
+                            </tr>  
+                        </c:forEach>
+                    </table>
+                </c:otherwise>
+            </c:choose>
+        </c:otherwise>
+    </c:choose>
+   
 </div>
 
-<%@ include file="footer.jsp" %>
+<jsp:include page="footer.jsp" />

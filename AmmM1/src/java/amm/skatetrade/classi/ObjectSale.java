@@ -13,7 +13,8 @@ public class ObjectSale {
     private int id;
     private String categoria;
     private String nome;
-    private String urlFoto;
+    private String urlImmagine;
+    private String descrizione;
     private int quantita;
     private double prezzo;
 
@@ -21,7 +22,8 @@ public class ObjectSale {
         id = 0;
         categoria = "";
         nome = "";
-        urlFoto = "";
+        urlImmagine = "";
+        descrizione = "";
         quantita = 0;
         prezzo = 0;
     }
@@ -50,12 +52,20 @@ public class ObjectSale {
         this.nome = nome;
     }
 
-    public String getUrlFoto() {
-        return urlFoto;
+    public String getUrlImmagine() {
+        return urlImmagine;
     }
 
-    public void setUrlFoto(String urlFoto) {
-        this.urlFoto = urlFoto;
+    public void setUrlImmagine(String urlImmagine) {
+        this.urlImmagine = urlImmagine;
+    }
+    
+    public String getDescrizione() {
+        return descrizione;
+    }
+
+    public void setDescrizione(String descrizione) {
+        this.descrizione = descrizione;
     }
 
     public int getQuantita() {

@@ -9,6 +9,6 @@ package amm.skatetrade.classi;
  *
  * @author alber
  */
-public class Cliente extends Utente {
+public class UtenteCliente extends Utente {
     
 }

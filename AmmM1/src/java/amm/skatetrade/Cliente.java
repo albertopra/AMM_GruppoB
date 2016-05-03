@@ -7,8 +7,10 @@ package amm.skatetrade;
 
 import amm.skatetrade.classi.ObjectSale;
 import amm.skatetrade.classi.ObjectSaleFactory;
-import amm.skatetrade.classi.UtenteCliente;
+import amm.skatetrade.classi.SaldoConto;
+import amm.skatetrade.classi.SaldoContoFactory;
 import amm.skatetrade.classi.Utente;
+import amm.skatetrade.classi.UtenteCliente;
 import amm.skatetrade.classi.UtenteVenditore;
 import amm.skatetrade.classi.UtentiFactory;
 import java.io.IOException;
@@ -25,8 +27,8 @@ import javax.servlet.http.HttpSession;
  *
  * @author alber
  */
-@WebServlet(name = "Venditore", urlPatterns = {"/venditore.html"})
-public class Venditore extends HttpServlet {
+@WebServlet(name = "Cliente", urlPatterns = {"/cliente.html"})
+public class Cliente extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -42,47 +44,62 @@ public class Venditore extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         
         HttpSession session = request.getSession();
+        ArrayList<ObjectSale> objectList = ObjectSaleFactory.getInstance()
+                .getSellingObjectList();
         ArrayList<Utente> listaUtenti = UtentiFactory.getInstance()
                 .getUserList();
         
-        /* L'attributo "datiInviati" sara' utilizzato nella jsp per
-           decidere se devono essere visualizzati i dati dell'oggetto
-           o meno */ 
-        request.setAttribute("datiInviati", false);
+        //Utilizzato nella jsp per capire se e' stato premuto il link dell'acquisto 
+        request.setAttribute("fase_acquisto", false);
+        
+        //Utilizato nella jsp per capire se e' stato confermato l'acquisto
+        request.setAttribute("oggetto_acquistato", false);
         
         //E' stato effettuato l'accesso in una richiesta precedente
         if(session.getAttribute("loggedIn") != null) {
             
-            /* L'attributo "logged" sara' utilizzato nella jsp per
-               visualizzare il relativo messaggio di accesso negato
-               da utente loggato o non */
+            /* Utilizzato nella jsp per visualizzare il relativo messaggio 
+               di accesso negato da utente loggato o non */
             request.setAttribute("logged", true);
             
             //Controlla che tipologia di utente ha effettuato l'accesso
             for(Utente u : listaUtenti) {
                 if (session.getAttribute("id").equals(u.getId())) {
-                    if(u instanceof UtenteVenditore) {
+                    if(u instanceof UtenteCliente) {
                         
-                        /* L'attributo "accessoNegato" sara' utilizzato nella
-                           jsp per capire se visualizzare o meno il messaggio 
-                           di accesso negatov*/
+                        /* Utilizzato nella jsp per capire se visualizzare o 
+                            meno il messaggio di accesso negato */
                         request.setAttribute("accessoNegato", false);
                         
-                        //Sono stati inviati dei dati dal form
-                        if(request.getParameter("Submit") != null) {
-                            ObjectSale object = new ObjectSale();
-                            int id = ObjectSaleFactory.getInstance().getCounterId() + 1;
+                        request.setAttribute("objectList", objectList);
+                        
+                        //E' stato premuto il link per l'acquisto
+                        if(request.getParameter("id_oggetto") != null) {
+                            ObjectSale object = ObjectSaleFactory.getInstance().getObjectSaleById(
+                                            Integer.parseInt(request.getParameter("id_oggetto")));
                             
-                            request.setAttribute("datiInviati", true);
-                            
-                            object.setId(id);
-                            object.setNome(request.getParameter("Nome_oggetto"));
-                            object.setUrlImmagine(request.getParameter("Url_immagine"));
-                            object.setDescrizione(request.getParameter("Descrizione"));
-                            object.setPrezzo(Integer.parseInt(request.getParameter("Prezzo")));
-                            object.setQuantita(Integer.parseInt(request.getParameter("Quantita")));
-                            
+                            request.setAttribute("fase_acquisto", true);
                             request.setAttribute("object", object);
+                            
+                            //E' stato premuto il pulsante per la conferma dell'acquisto
+                            if(request.getParameter("Submit") != null) {
+                                ArrayList<SaldoConto> listaSaldoConto = SaldoContoFactory.
+                                        getInstance().getSaldoContoList();
+                                double saldoContoUtente = 0;
+                                
+                                request.setAttribute("oggetto_acquistato", true);
+                                
+                                //Ricerca e salva il saldo conto dell'utente loggato
+                                for(SaldoConto s : listaSaldoConto) {
+                                    if(s.getUtente().equals(u))
+                                        saldoContoUtente = s.getConto();
+                                }
+                                
+                                if(object.getPrezzo() > saldoContoUtente)
+                                    request.setAttribute("errore_acquisto", true);
+                                else
+                                    request.setAttribute("errore_acquisto", false);
+                            }
                         }
                     }
                     else {
@@ -96,7 +113,7 @@ public class Venditore extends HttpServlet {
             request.setAttribute("logged", false);
         }
         
-        request.getRequestDispatcher("venditore.jsp")
+        request.getRequestDispatcher("cliente.jsp")
                 .forward(request, response);
     }
 

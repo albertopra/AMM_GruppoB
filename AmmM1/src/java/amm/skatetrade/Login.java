@@ -5,7 +5,9 @@
  */
 package amm.skatetrade;
 
-import amm.skatetrade.classi.Cliente;
+import amm.skatetrade.classi.ObjectSale;
+import amm.skatetrade.classi.ObjectSaleFactory;
+import amm.skatetrade.classi.UtenteCliente;
 import amm.skatetrade.classi.Utente;
 import amm.skatetrade.classi.UtentiFactory;
 import java.io.IOException;
@@ -38,45 +40,70 @@ public class Login extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         
-        HttpSession session = request.getSession(true);
-        
-        request.setAttribute("datiErrati", false);
-        
-        if(request.getParameter("Submit") != null) {
-            String username = request.getParameter("Username");
-            String password = request.getParameter("Password");
+        HttpSession session = request.getSession();
+        ArrayList<Utente> listaUtenti = UtentiFactory.getInstance()
+                .getUserList();
+        ArrayList<ObjectSale> objectList = ObjectSaleFactory.getInstance()
+                .getSellingObjectList();
+       
+        //E' stato effettuato l'accesso in una richiesta precedente
+        if(session.getAttribute("loggedIn") != null) { 
             
-            ArrayList<Utente> listaUtenti = UtentiFactory.getInstance()
-                    .getUserList();
-            
-            for(Utente u : listaUtenti)
-            {
-                if(u.getUsername().equals(username) && 
-                        u.getPassword().equals(password))
-                {
-                    session.setAttribute("loggedId", true);
-                    session.setAttribute("id", u.getId());
-                    
-                    if(u instanceof Cliente)
-                    {
-                        request.setAttribute("cliente", u);
+            //Controlla che tipologia di utente ha effettuato l'accesso
+            for(Utente u : listaUtenti) {
+                if (session.getAttribute("id").equals(u.getId())) {
+                    if(u instanceof UtenteCliente) {
+                        request.setAttribute("objectList", objectList);
                         request.getRequestDispatcher("cliente.jsp")
-                                .forward(request, response);
+                               .forward(request, response);
                     }
-                    else
-                    {
-                        request.setAttribute("venditore", u);
+                    else {
                         request.getRequestDispatcher("venditore.jsp")
-                                .forward(request, response);
+                               .forward(request, response);
                     }
                 }
+            }       
+        }
+        else {
+            /* Attributo utilizzato per visualizzare il 
+               messaggio di errore nell'inserimento dei dati 
+               in login.jsp */
+            request.setAttribute("datiErrati", false);
+            
+            //Sono stati inviati dei dati dal form
+            if(request.getParameter("Submit") != null) {
+                String username = request.getParameter("Username");
+                String password = request.getParameter("Password");
+
+                //Ricerca l'utente e verifica la tipologia
+                for(Utente u : listaUtenti) {
+                    if(u.getUsername().equals(username) && 
+                            u.getPassword().equals(password)) {
+                        
+                        session.setAttribute("loggedIn", true);
+                        session.setAttribute("id", u.getId());
+
+                        if(u instanceof UtenteCliente) {
+                            request.setAttribute("objectList", objectList);
+                            request.getRequestDispatcher("cliente.jsp")
+                                   .forward(request, response);
+                        }
+                        else {
+                            request.getRequestDispatcher("venditore.jsp")
+                                   .forward(request, response);
+                        }
+                    }
+                }
+                
+                /* Non è stato trovato alcun utente, quindi imposto a true
+                   l'attributo */
+                request.setAttribute("datiErrati", true);
             }
             
-            request.setAttribute("datiErrati", true);
-        }
-        
-        request.getRequestDispatcher("login.jsp")
-                .forward(request, response);
+            //Richiamo jsp per il login
+            request.getRequestDispatcher("login.jsp")
+                   .forward(request, response);
+        }      
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

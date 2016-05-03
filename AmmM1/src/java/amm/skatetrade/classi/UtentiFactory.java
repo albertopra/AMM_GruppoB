@@ -14,6 +14,29 @@ import java.util.ArrayList;
 public class UtentiFactory {
     // Attributi
     private static UtentiFactory singleton;
+    private ArrayList<Utente> listaClienti = new ArrayList<Utente>();
+    private ArrayList<Utente> listaVenditori = new ArrayList<Utente>();
+    
+    /* Costruttore */
+    private UtentiFactory() {
+        UtenteCliente cliente1 = new UtenteCliente();
+        cliente1.setId(1);
+        cliente1.setNome("Alberto");
+        cliente1.setCognome("Pranteddu");
+        cliente1.setUsername("apranteddu");
+        cliente1.setPassword("psw1");
+        listaClienti.add(cliente1);
+        
+        UtenteVenditore venditore1 = new UtenteVenditore();
+        venditore1.setId(2);
+        venditore1.setNome("Mario");
+        venditore1.setCognome("Rossi");
+        venditore1.setUsername("mrossi");
+        venditore1.setPassword("psw2");
+        listaVenditori.add(venditore1);
+    }
+    
+    /* Metodi */
     public static UtentiFactory getInstance() {
         if (singleton == null) {
             singleton = new UtentiFactory();
@@ -21,32 +44,6 @@ public class UtentiFactory {
         return singleton;
     }
     
-    private ArrayList<Utente> listaClienti = new ArrayList<Utente>();
-    private ArrayList<Utente> listaVenditori = new ArrayList<Utente>();
-    
-    /* Costruttore */
-    private UtentiFactory() {
-        Cliente cliente = new Cliente();
-        Venditore venditore = new Venditore();
-        
-        cliente.setId(1);
-        cliente.setNome("Alberto");
-        cliente.setCognome("Pranteddu");
-        cliente.setUsername("tarenpudd");
-        cliente.setPassword("ciao1");
-        
-        listaClienti.add(cliente);
-        
-        venditore.setId(2);
-        venditore.setNome("Mario");
-        venditore.setCognome("Rossi");
-        venditore.setUsername("mrossi");
-        venditore.setPassword("ciao2");
-        
-        listaVenditori.add(venditore);
-    }
-    
-    /* Metodi */
     public ArrayList<Utente> getClienteList()
     {
         return listaClienti;
