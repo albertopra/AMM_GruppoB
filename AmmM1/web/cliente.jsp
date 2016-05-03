@@ -32,7 +32,7 @@
                         <c:when test="${oggetto_acquistato == true}">
                             <c:choose>
                                 <c:when test="${errore_acquisto == true}">
-                                    <p>Attezione! Il credito disponibile e' inferiore
+                                    <p>Attenzione! Il credito disponibile e' inferiore
                                         alla cifra richiesta.</p>
                                     <a href="cliente.html">Torna indietro.</a>
                                 </c:when>
