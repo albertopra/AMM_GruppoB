@@ -1,0 +1,32 @@
+Schema Concettuale
+
+Entità:
+
+	Nome: Utente
+	Attributi: id, nome, cognome, username, password
+	   
+	Nome: Cliente (figlio di Utente)
+	
+	Nome: Venditore (figlio di Utente)
+
+	Nome: Oggetto
+	Attributi: id, categoria, nome, url_immagine, descrizione, quantità, prezzo
+
+	Nome: Conto (entità debole)
+	Attributi: valore
+
+Relazioni:
+	
+	Nome: Inserimento
+	Entità A: Venditore (0,n)
+	Entità B: Oggetto (1,1)
+
+	Nome: Saldo Conto
+	Entità A: Utente (1,1)
+	Entità B: Conto (1,1)
+
+
+Schema Logico
+
+	Utente(id, nome, cognome, username, password, tipologia, saldo_conto)
+	Oggetti(id, categoria, nome, url_immagine, descrizione, quantità, prezzo, venditore)

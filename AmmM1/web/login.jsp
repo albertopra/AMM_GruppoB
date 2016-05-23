@@ -17,7 +17,7 @@
             la password sono errati.</p>
     </c:if>
 
-        <form method="post" action="login.html">
+    <form method="post" action="login.html">
         <div class="input-field">
             <!-- Username -->
             <label class="label" for="username">Username:</label>

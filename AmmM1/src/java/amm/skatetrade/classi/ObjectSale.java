@@ -16,7 +16,7 @@ public class ObjectSale {
     private String urlImmagine;
     private String descrizione;
     private int quantita;
-    private double prezzo;
+    private float prezzo;
 
     public ObjectSale() {
         id = 0;
@@ -76,11 +76,11 @@ public class ObjectSale {
         this.quantita = quantita;
     }
 
-    public double getPrezzo() {
+    public float getPrezzo() {
         return prezzo;
     }
 
-    public void setPrezzo(double prezzo) {
+    public void setPrezzo(float prezzo) {
         this.prezzo = prezzo;
     }
 }

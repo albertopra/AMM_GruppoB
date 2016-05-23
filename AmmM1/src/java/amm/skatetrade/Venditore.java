@@ -71,18 +71,20 @@ public class Venditore extends HttpServlet {
                         //Sono stati inviati dei dati dal form
                         if(request.getParameter("Submit") != null) {
                             ObjectSale object = new ObjectSale();
-                            int id = ObjectSaleFactory.getInstance().getCounterId() + 1;
                             
                             request.setAttribute("datiInviati", true);
                             
-                            object.setId(id);
                             object.setNome(request.getParameter("Nome_oggetto"));
                             object.setUrlImmagine(request.getParameter("Url_immagine"));
                             object.setDescrizione(request.getParameter("Descrizione"));
-                            object.setPrezzo(Integer.parseInt(request.getParameter("Prezzo")));
+                            object.setPrezzo(Float.parseFloat(request.getParameter("Prezzo")));
                             object.setQuantita(Integer.parseInt(request.getParameter("Quantita")));
                             
                             request.setAttribute("object", object);
+                            
+                            //Inserisco l'oggetto
+                            ObjectSaleFactory.getInstance().addObject(object, 
+                                    (int) session.getAttribute("id"));
                         }
                     }
                     else {

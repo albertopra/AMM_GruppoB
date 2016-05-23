@@ -13,6 +13,7 @@ import java.util.ArrayList;
  */
 public class SaldoContoFactory {
     private static SaldoContoFactory singleton;
+    private String connectionString;
     private ArrayList<SaldoConto> listaSaldoConto = new ArrayList<SaldoConto>();
     
     //Lista utenti
@@ -41,4 +42,12 @@ public class SaldoContoFactory {
     public ArrayList<SaldoConto> getSaldoContoList() {
         return listaSaldoConto;
     }
+    
+    public void setConnectionString(String s){
+    	this.connectionString = s;
+    }
+
+    public String getConnectionString(){
+    	return this.connectionString;
+    } 
 }

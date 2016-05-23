@@ -7,12 +7,15 @@ package amm.skatetrade;
 
 import amm.skatetrade.classi.ObjectSale;
 import amm.skatetrade.classi.ObjectSaleFactory;
+import amm.skatetrade.classi.SaldoContoFactory;
 import amm.skatetrade.classi.UtenteCliente;
 import amm.skatetrade.classi.Utente;
 import amm.skatetrade.classi.UtentiFactory;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -24,9 +27,33 @@ import javax.servlet.http.HttpSession;
  *
  * @author alber
  */
-@WebServlet(name = "Login", urlPatterns = {"/login.html"})
+@WebServlet(name = "Login", urlPatterns = {"/login.html"}, loadOnStartup = 0)
 public class Login extends HttpServlet {
+    
+    private static final String JDBC_DRIVER = "org.apache.derby.jdbc.EmbeddedDriver";
+    private static final String DB_CLEAN_PATH = "../../web/WEB-INF/db/ammdb";
+    private static final String DB_BUILD_PATH = "WEB-INF/db/ammdb";
 
+    @Override 
+    public void init(){
+        //String dbConnection = "jdbc:derby:" + 
+                //this.getServletContext().getRealPath("/") + DB_BUILD_PATH;
+        
+        String dbConnection = "jdbc:derby://localhost:1527/ammdb";        
+                
+        try {
+            Class.forName(JDBC_DRIVER);
+        }
+        catch (ClassNotFoundException ex) {
+            Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        ObjectSaleFactory.getInstance().setConnectionString(dbConnection);
+        SaldoContoFactory.getInstance().setConnectionString(dbConnection);
+        UtentiFactory.getInstance().setConnectionString(dbConnection);
+    }
+    
+    
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -45,7 +72,9 @@ public class Login extends HttpServlet {
                 .getUserList();
         ArrayList<ObjectSale> objectList = ObjectSaleFactory.getInstance()
                 .getSellingObjectList();
-       
+        
+        ObjectSaleFactory.getInstance().removeObject(108);
+        
         //E' stato effettuato l'accesso in una richiesta precedente
         if(session.getAttribute("loggedIn") != null) { 
             
@@ -76,7 +105,7 @@ public class Login extends HttpServlet {
                 String password = request.getParameter("Password");
 
                 //Ricerca l'utente e verifica la tipologia
-                for(Utente u : listaUtenti) {
+                for(Utente u : listaUtenti) {                 
                     if(u.getUsername().equals(username) && 
                             u.getPassword().equals(password)) {
                         
