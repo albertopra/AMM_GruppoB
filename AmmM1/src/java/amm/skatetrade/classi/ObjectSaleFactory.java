@@ -186,56 +186,105 @@ public class ObjectSaleFactory {
         }
     }
     
-    public boolean acquistoObject(int idCliente, int idOggetto) {
-        try {
-            Connection conn = DriverManager.getConnection(connectionString, 
-                    "alberto", "1234");
-            
-            int idVenditore;
-            int prezzoOggetto;
-            
-            String queryGetIdVenditore = "select venditore from oggetto where id = ?";
-            String queryGetPrezzoOggetto = "select prezzo from oggetto where id = ?";
-            String queryRimozioneOggetto = "delete from oggetto where id = ?";
-            String queryDiminuireSaldoCliente = "update utente set prezzo = ? where id = ?";
-            String queryAumentoSaldoVenditore = "update utente set prezzo = ? where id = ?";
-            
+    public boolean acquistoObject(int idCliente, float saldoContoCliente, int idOggetto, float prezzoOggetto) throws SQLException {
+        int idVenditore = 0;
+        float saldoContoVenditore = 0;
+        
+        Connection conn = DriverManager.getConnection(connectionString, 
+                "alberto", "1234");
+        
+        PreparedStatement getIdVenditore = null;
+        PreparedStatement rimozioneOggetto = null;
+        PreparedStatement getSaldoContoVenditore = null;
+        PreparedStatement modificaSaldo = null;
+        ResultSet res;
+        
+        String queryGetIdVenditore = "select venditore from oggetto where id = ?";
+        String queryGetSaldoContoVenditore = "select saldo_conto from utente where id = ?";
+        String queryRimozioneOggetto = "delete from oggetto where id = ?";  
+        String queryModificaSaldo = "update utente set prezzo = ? where id = ?";
+        
+        try {    
             conn.setAutoCommit(false);
             
-            PreparedStatement getIdVenditore = conn.
-                    prepareStatement(queryGetIdVenditore);
-            PreparedStatement getPrezzoOggetto = conn.
-                    prepareStatement(queryGetPrezzoOggetto);
-            PreparedStatement diminuireSaldoCliente = conn.
-                    prepareStatement(queryDiminuireSaldoCliente);
-            PreparedStatement aumentoSaldoVenditore = conn.
-                    prepareStatement(queryAumentoSaldoVenditore);
-            
+            getIdVenditore = conn.prepareStatement(queryGetIdVenditore);
+            getSaldoContoVenditore = conn.prepareStatement(queryGetSaldoContoVenditore);
+            rimozioneOggetto = conn.prepareStatement(queryRimozioneOggetto);
+            modificaSaldo = conn.prepareStatement(queryModificaSaldo);
+
+            //recupero id e saldo conto venditore
             getIdVenditore.setInt(1, idOggetto);
-            getPrezzoOggetto.setInt(1, idOggetto);
+            res = getIdVenditore.executeQuery();
             
-            //recupero l'id del venditore
-            ResultSet res = getIdVenditore.executeQuery();
-            if(res.next()) {
+            if(res.next())
                 idVenditore = res.getInt("venditore");
-            }
+            else
+                return false;
             
-            //recupero il prezzo dell'oggetto
-            res = getPrezzoOggetto.executeQuery();
+            getSaldoContoVenditore.setInt(1, idVenditore);
+            res = getIdVenditore.executeQuery();
+            
             if(res.next()) {
-                prezzoOggetto = res.getInt("prezzo");
+                saldoContoVenditore = res.getFloat("saldo_conto");
             }
+            else
+                return false;
+            
             
             //rimuovo l'oggetto acquistato
+            rimozioneOggetto.setInt(1, idOggetto);
+            
+            int updateOggetto = rimozioneOggetto.executeUpdate();
+            
+            if(updateOggetto != 1) {
+                conn.rollback();
+                return false;
+            }
             
             
+            //diminuisco il saldo conto del cliente
+            modificaSaldo.setFloat(1, saldoContoCliente - prezzoOggetto);
+            modificaSaldo.setInt(2, idCliente);
             
+            int updateCliente = modificaSaldo.executeUpdate();
+            
+            if(updateCliente != 1) {
+                conn.rollback();
+                return false;
+            }
+            
+            //aumento il saldo conto del venditore
+            modificaSaldo.setFloat(1, saldoContoVenditore + prezzoOggetto);
+            modificaSaldo.setInt(2, idVenditore);
+            int updateVenditore = modificaSaldo.executeUpdate();
+            
+            if(updateVenditore != 1) {
+                conn.rollback();
+                return false;
+            }
+            
+            conn.commit();
+            conn.setAutoCommit(true);
+            
+            getIdVenditore.close();
+            getSaldoContoVenditore.close();
+            rimozioneOggetto.close();
+            modificaSaldo.close();
+            
+            conn.close();
+            
+            return true;
         }
         catch(SQLException e) {
+            try {
+                conn.rollback();
+            }
+            catch(SQLException e2) {
+                
+            }
+            
             return false;
         }
-        
-        return true;
     }
     
     public void setConnectionString(String s){

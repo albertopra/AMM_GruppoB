@@ -15,6 +15,7 @@ import amm.skatetrade.classi.UtenteVenditore;
 import amm.skatetrade.classi.UtentiFactory;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -95,16 +96,26 @@ public class Cliente extends HttpServlet {
                                         saldoContoUtente = s.getConto();
                                 }
                                 
-                                if(object.getPrezzo() > saldoContoUtente) {
-                                    if(ObjectSaleFactory.getInstance().
-                                            acquistoObject(u.getId(), object.getId()) == true) {
-                                        
-                                    } 
+                                if(saldoContoUtente <= object.getPrezzo()) {
+                                    try {
+                                        if(ObjectSaleFactory.getInstance().
+                                            acquistoObject(u.getId(), saldoContoUtente, 
+                                                object.getId(), object.getPrezzo()) == true)
+                                        {  
+                                            request.setAttribute("errore_acquisto", false);
+                                        }
+                                        else
+                                            request.setAttribute("errore_acquisto", true);
+                                            
+                                    }
+                                    catch(SQLException e) {
+                                        request.setAttribute("errore_acquisto", true);
+                                    }
                                     
-                                    request.setAttribute("errore_acquisto", true);
+                                    
                                 }
                                 else
-                                    request.setAttribute("errore_acquisto", false);
+                                    request.setAttribute("errore_acquisto", true);
                             }
                         }
                     }
