@@ -85,7 +85,7 @@ public class Cliente extends HttpServlet {
                             if(request.getParameter("Submit") != null) {
                                 ArrayList<SaldoConto> listaSaldoConto = SaldoContoFactory.
                                         getInstance().getSaldoContoList();
-                                double saldoContoUtente = 0;
+                                float saldoContoUtente = 0;
                                 
                                 request.setAttribute("oggetto_acquistato", true);
                                 
@@ -95,8 +95,14 @@ public class Cliente extends HttpServlet {
                                         saldoContoUtente = s.getConto();
                                 }
                                 
-                                if(object.getPrezzo() > saldoContoUtente)
+                                if(object.getPrezzo() > saldoContoUtente) {
+                                    if(ObjectSaleFactory.getInstance().
+                                            acquistoObject(u.getId(), object.getId()) == true) {
+                                        
+                                    } 
+                                    
                                     request.setAttribute("errore_acquisto", true);
+                                }
                                 else
                                     request.setAttribute("errore_acquisto", false);
                             }

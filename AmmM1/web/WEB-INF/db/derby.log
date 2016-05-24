@@ -12,3 +12,4 @@ os.arch=amd64
 os.version=4.4.0-22-generic
 derby.system.home=/home/alberto/NetBeansProjects/AMM_GruppoB/AmmM1/web/WEB-INF/db
 Programma di caricamento classe database avviato - derby.database.classpath=''
+----------------------------------------------------------------

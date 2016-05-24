@@ -73,8 +73,6 @@ public class Login extends HttpServlet {
         ArrayList<ObjectSale> objectList = ObjectSaleFactory.getInstance()
                 .getSellingObjectList();
         
-        ObjectSaleFactory.getInstance().removeObject(108);
-        
         //E' stato effettuato l'accesso in una richiesta precedente
         if(session.getAttribute("loggedIn") != null) { 
             

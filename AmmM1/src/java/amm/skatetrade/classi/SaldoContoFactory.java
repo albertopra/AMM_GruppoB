@@ -5,6 +5,11 @@
  */
 package amm.skatetrade.classi;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 
 /**
@@ -14,20 +19,12 @@ import java.util.ArrayList;
 public class SaldoContoFactory {
     private static SaldoContoFactory singleton;
     private String connectionString;
-    private ArrayList<SaldoConto> listaSaldoConto = new ArrayList<SaldoConto>();
     
     //Lista utenti
     private ArrayList<Utente> listaUtenti = UtentiFactory.getInstance().getUserList();
     
     private SaldoContoFactory() {
-        for(Utente u : listaUtenti) {
-            SaldoConto saldoConto = new SaldoConto();
-            
-            saldoConto.setUtente(u);
-            saldoConto.setConto(30);
-            
-            listaSaldoConto.add(saldoConto);
-        }
+        
     }
     
     /* Metodi */
@@ -40,6 +37,58 @@ public class SaldoContoFactory {
     }
     
     public ArrayList<SaldoConto> getSaldoContoList() {
+        ArrayList<SaldoConto> listaSaldoConto = new ArrayList<SaldoConto>();
+        
+        try {
+            Connection conn = DriverManager.getConnection(connectionString, 
+                    "alberto", "1234");
+            
+            String query = "select * from utente";
+            Statement stmt = conn.createStatement();
+            
+            ResultSet res = stmt.executeQuery(query);
+            
+            while(res.next()) {
+                SaldoConto saldoConto = new SaldoConto();
+                
+                if(res.getString("tipologia").equals("cliente")) {
+                    UtenteCliente cliente = new UtenteCliente();
+                    
+                    cliente.setId(res.getInt("id"));
+                    cliente.setNome(res.getString("nome"));
+                    cliente.setCognome(res.getString("cognome"));
+                    cliente.setUsername(res.getString("username"));
+                    cliente.setPassword(res.getString("password"));
+                    
+                    saldoConto.setUtente(cliente);
+                    saldoConto.setConto(res.getFloat("saldo_conto"));
+                    
+                    listaSaldoConto.add(saldoConto);
+                }
+                
+                if(res.getString("tipologia").equals("venditore")) {
+                    UtenteVenditore venditore = new UtenteVenditore();
+                    
+                    venditore.setId(res.getInt("id"));
+                    venditore.setNome(res.getString("nome"));
+                    venditore.setCognome(res.getString("cognome"));
+                    venditore.setUsername(res.getString("username"));
+                    venditore.setPassword(res.getString("password"));
+                    
+                    saldoConto.setUtente(venditore);
+                    saldoConto.setConto(res.getFloat("saldo_conto"));
+                    
+                    listaSaldoConto.add(saldoConto);
+                }
+            }
+            
+            stmt.close();
+            conn.close();
+        }
+        catch(SQLException e) {
+            
+        }
+        
         return listaSaldoConto;
     }
     

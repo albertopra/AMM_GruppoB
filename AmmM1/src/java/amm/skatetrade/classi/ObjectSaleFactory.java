@@ -186,6 +186,58 @@ public class ObjectSaleFactory {
         }
     }
     
+    public boolean acquistoObject(int idCliente, int idOggetto) {
+        try {
+            Connection conn = DriverManager.getConnection(connectionString, 
+                    "alberto", "1234");
+            
+            int idVenditore;
+            int prezzoOggetto;
+            
+            String queryGetIdVenditore = "select venditore from oggetto where id = ?";
+            String queryGetPrezzoOggetto = "select prezzo from oggetto where id = ?";
+            String queryRimozioneOggetto = "delete from oggetto where id = ?";
+            String queryDiminuireSaldoCliente = "update utente set prezzo = ? where id = ?";
+            String queryAumentoSaldoVenditore = "update utente set prezzo = ? where id = ?";
+            
+            conn.setAutoCommit(false);
+            
+            PreparedStatement getIdVenditore = conn.
+                    prepareStatement(queryGetIdVenditore);
+            PreparedStatement getPrezzoOggetto = conn.
+                    prepareStatement(queryGetPrezzoOggetto);
+            PreparedStatement diminuireSaldoCliente = conn.
+                    prepareStatement(queryDiminuireSaldoCliente);
+            PreparedStatement aumentoSaldoVenditore = conn.
+                    prepareStatement(queryAumentoSaldoVenditore);
+            
+            getIdVenditore.setInt(1, idOggetto);
+            getPrezzoOggetto.setInt(1, idOggetto);
+            
+            //recupero l'id del venditore
+            ResultSet res = getIdVenditore.executeQuery();
+            if(res.next()) {
+                idVenditore = res.getInt("venditore");
+            }
+            
+            //recupero il prezzo dell'oggetto
+            res = getPrezzoOggetto.executeQuery();
+            if(res.next()) {
+                prezzoOggetto = res.getInt("prezzo");
+            }
+            
+            //rimuovo l'oggetto acquistato
+            
+            
+            
+        }
+        catch(SQLException e) {
+            return false;
+        }
+        
+        return true;
+    }
+    
     public void setConnectionString(String s){
     	this.connectionString = s;
     }

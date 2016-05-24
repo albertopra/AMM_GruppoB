@@ -11,7 +11,7 @@ package amm.skatetrade.classi;
  */
 public class SaldoConto {
     private Utente utente;
-    private double conto;
+    private float conto;
     
     public SaldoConto() {
         utente = null;
@@ -26,11 +26,11 @@ public class SaldoConto {
         this.utente = utente;
     }
 
-    public double getConto() {
+    public float getConto() {
         return conto;
     }
 
-    public void setConto(double conto) {
+    public void setConto(float conto) {
         this.conto = conto;
     }   
 }
